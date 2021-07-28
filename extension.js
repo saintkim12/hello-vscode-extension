@@ -19,9 +19,19 @@ function activate(context) {
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('hello-vscode-extension.helloWorld', function () {
 		// The code you place here will be executed every time your command is executed
+    const editor = vscode.window.activeTextEditor
 
+    if (editor) {
+      // const document = editor.document
+      // const selection = new vscode.Position(document.lineCount, 0)
+      const selection = editor.selection.active
+      editor.edit(editBuilder => {
+        editBuilder.insert(selection, `hahaho`)
+      })
+    }
+    
 		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from hello-vscode-extension!');
+		vscode.window.showInformationMessage('hello-vscode-extension');
 	});
 
 	context.subscriptions.push(disposable);
