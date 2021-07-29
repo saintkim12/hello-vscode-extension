@@ -10,14 +10,24 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:hello-vscode-extension.helloWorld"
+    "onCommand:hello-vscode-extension.runJSAsScript",
+    "onCommand:hello-vscode-extension.runJSAsArgumentByInput",
+    "onCommand:hello-vscode-extension.runJSAsArgumentWithEditorScript"
   ],
   "main": "./extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "hello-vscode-extension.helloWorld",
-        "title": "Hello World2"
+        "command": "hello-vscode-extension.runJSAsScript",
+        "title": "Run JS: Selected text as script"
+      },
+      {
+        "command": "hello-vscode-extension.runJSAsArgumentByInput",
+        "title": "Run JS: Selected text as argument"
+      },
+      {
+        "command": "hello-vscode-extension.runJSAsArgumentWithEditorScript",
+        "title": "Run JS: Selected text as argument with editor script"
       }
     ]
   },
@@ -27,14 +37,17 @@
     "test": "node ./test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.58.0",
     "@types/glob": "^7.1.3",
     "@types/mocha": "^8.2.2",
     "@types/node": "14.x",
+    "@types/vscode": "^1.58.0",
     "eslint": "^7.27.0",
     "glob": "^7.1.7",
     "mocha": "^8.4.0",
     "typescript": "^4.3.2",
     "vscode-test": "^1.5.2"
+  },
+  "dependencies": {
+    "safe-eval": "^0.4.1"
   }
 }
