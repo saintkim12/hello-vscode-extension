@@ -95,11 +95,48 @@ function activate (context) {
           const input = document.getText(selection)
           // return vscode.workspace.openTextDocument({ language: 'javascript', content: '/* input your script here */\n' })
           // const file = vscode.Uri.parse('untitled:' + path.join(vscode.workspace.workspaceFolders, 'untitled.js'))
-          // return vscode.workspace.openTextDocument(file)
-          return vscode.workspace.openTextDocument({ language: 'javascript', content: '' })
+
+          const rootPath = '/home/saintkim12' // FIXME
+          console.log('vscode.workspace.rootPath', rootPath)
+          // const file = vscode.Uri.parse('untitled' + ':' + path.join(rootPath, 'untitled.js'))
+          const file = vscode.Uri.parse('untitled:' + path.join(rootPath, 'untitled.js'))
+          
+          const onCloseEvent = vscode.workspace.onDidCloseTextDocument(({ fileName, getText }) => {
+            console.log('fileName', fileName, path.join(rootPath, 'untitled.js').toString())
+            if (fileName === path.join(rootPath, 'untitled.js').toString()) {
+              console.log('getText', getText())
+              onCloseEvent.dispose()
+            }
+          })
+
+          return vscode.workspace.openTextDocument(file)
+          // return vscode.workspace.openTextDocument({ language: 'javascript', content: '' })
             .then(editor => vscode.window.showTextDocument(editor, 1, false))
             .then(editor => {
               editor.edit(editBuilder => editBuilder.insert(editor.document.positionAt(0), '/* input your script here */\n'))
+              // onDidCloseTextDocument((arg) => { })
+              // eol (get): ƒ eol(){return u._eol===`\n`?P.EndOfLine.LF:P.EndOfLine.CRLF}
+              // fileName (get): ƒ fileName(){return u._uri.fsPath}
+              // getText: ƒ getText(S){return S?u._getTextInRange(S):u.getText()}
+              // getWordRangeAtPosition: ƒ getWordRangeAtPosition(S,w){return u._getWordRangeAtPosition(S,w)}
+              // isClosed (get): ƒ isClosed(){return u._isDisposed}
+              // isDirty (get): ƒ isDirty(){return u._isDirty}
+              // isUntitled (get): ƒ isUntitled(){return u._uri.scheme===R.Schemas.untitled}
+              // languageId (get): ƒ languageId(){return u._languageId}
+              // lineAt: ƒ lineAt(S){return u._lineAt(S)}
+              // lineCount (get): ƒ lineCount(){return u._lines.length}
+              // notebook (get): ƒ notebook(){return u._notebook}
+              // offsetAt: ƒ offsetAt(S){return u._offsetAt(S)}
+              // positionAt: ƒ positionAt(S){return u._positionAt(S)}
+              // save: ƒ save(){return u._save()}
+              // uri (get): ƒ uri(){return u._uri}
+              // validatePosition: ƒ validatePosition(S){return u._validatePosition(S)}
+              // validateRange: ƒ validateRange(S){return u._validateRange(S)}
+              // version (get): ƒ version(){return u._versionId}
+              // __proto__: Object
+              // length: 1
+              // __proto__: Array(0)
+              
             })
 
           // return vscode.window.showInputBox({
