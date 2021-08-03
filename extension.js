@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
 const path = require('path');
+const fs = require('fs');
 const safeEval = require('safe-eval')
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -96,24 +97,28 @@ function activate (context) {
           // return vscode.workspace.openTextDocument({ language: 'javascript', content: '/* input your script here */\n' })
           // const file = vscode.Uri.parse('untitled:' + path.join(vscode.workspace.workspaceFolders, 'untitled.js'))
 
-          const rootPath = '/home/saintkim12' // FIXME
+          const rootPath = context.globalStorageUri.path
           console.log('vscode.workspace.rootPath', rootPath)
           // const file = vscode.Uri.parse('untitled' + ':' + path.join(rootPath, 'untitled.js'))
           const file = vscode.Uri.parse('untitled:' + path.join(rootPath, 'untitled.js'))
-          
-          const onCloseEvent = vscode.workspace.onDidCloseTextDocument(({ fileName, getText }) => {
-            console.log('fileName', fileName, path.join(rootPath, 'untitled.js').toString())
-            if (fileName === path.join(rootPath, 'untitled.js').toString()) {
-              console.log('getText', getText())
-              onCloseEvent.dispose()
-            }
-          })
 
           return vscode.workspace.openTextDocument(file)
           // return vscode.workspace.openTextDocument({ language: 'javascript', content: '' })
             .then(editor => vscode.window.showTextDocument(editor, 1, false))
             .then(editor => {
               editor.edit(editBuilder => editBuilder.insert(editor.document.positionAt(0), '/* input your script here */\n'))
+            }).then(() => {
+              return new Promise(resolve => {
+                const onCloseEvent = vscode.workspace.onDidCloseTextDocument(({ fileName, getText }) => {
+                  console.log('fileName', fileName, path.join(rootPath, 'untitled.js').toString())
+                  if (fileName === path.join(rootPath, 'untitled.js').toString()) {
+                    console.log('getText', getText())
+                    onCloseEvent.dispose()
+                    fs.unlink(path.join(rootPath, 'untitled.js').toString()) // FIXME: 지우는거 테스트
+                    resolve()
+                  }
+                })
+              })
               // onDidCloseTextDocument((arg) => { })
               // eol (get): ƒ eol(){return u._eol===`\n`?P.EndOfLine.LF:P.EndOfLine.CRLF}
               // fileName (get): ƒ fileName(){return u._uri.fsPath}
